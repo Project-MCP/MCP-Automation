@@ -1,0 +1,17 @@
+﻿jira>=3.8.0
+GitPython>=3.1.40
+PyGithub>=1.59.0
+python-dotenv>=1.0.0
+pydantic>=2.5.0
+asyncio-throttle>=1.0.2
+schedule>=1.2.0
+sqlalchemy>=2.0.25
+google-adk
+google-generativeai
+
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+python-multipart>=0.0.6
+psutil>=5.9.0
+aiofiles>=23.2.1
+aiohttp>=3.9.0

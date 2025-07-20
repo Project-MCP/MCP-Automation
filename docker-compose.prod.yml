@@ -1,0 +1,50 @@
+services:
+  ai-agents:
+    build: .
+    command: python scripts/main.py
+    environment:
+      - NODE_ENV=production
+      - LOG_LEVEL=INFO
+      - AGENT_TIMEOUT=600
+      - PYTHONPATH=/app
+      - HOST=0.0.0.0
+      - PORT=8000
+    volumes:
+      - ./logs:/app/logs
+      - ./data:/app/data
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+
+  agent-scheduler:
+    build: .
+    command: python scripts/scheduler.py
+    environment:
+      - NODE_ENV=production
+      - LOG_LEVEL=INFO
+      - PYTHONPATH=/app
+    volumes:
+      - ./logs:/app/logs
+      - ./data:/app/data
+    depends_on:
+      - ai-agents
+    restart: unless-stopped
+
+  monitoring:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--web.console.libraries=/etc/prometheus/console_libraries"
+      - "--web.console.templates=/etc/prometheus/consoles"
+      - "--storage.tsdb.retention.time=200h"
+      - "--web.enable-lifecycle"
+    restart: unless-stopped
+
+volumes:
+  prometheus_data:
